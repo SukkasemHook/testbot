@@ -12,6 +12,7 @@ intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # 🔄 ตัวแปรโค้ดเริ่มต้น
+GUILD_ID = discord.Object(id=1387050215495700500)
 current_code = "DEFAULT123"
 raw_users = os.getenv("USERS")
 
@@ -79,7 +80,7 @@ class DropdownView(discord.ui.View):
         super().__init__()
         self.add_item(UserDropdown())
 
-@bot.tree.command(name="coupon_dropdown", description="เลือกรายชื่อเพื่อรับลิงก์คูปอง")
+@bot.tree.command(name="code_by_name", description="เลือกรายชื่อเพื่อรับลิงก์คูปอง", guild=GUILD_ID)
 async def coupon_dropdown(interaction: discord.Interaction):
     await interaction.response.send_message("📋 กรุณาเลือกชื่อ:", view=DropdownView(), ephemeral=True)
 
