@@ -26,9 +26,10 @@ except json.JSONDecodeError as e:
 
 @bot.event
 async def on_ready():
+    await bot.wait_until_ready()
     try:
-        synced = await bot.tree.sync()
-        print(f"✅ Synced {len(synced)} commands")
+        synced = await bot.tree.sync(guild=GUILD_ID)
+        print(f"✅ Synced {len(synced)} commands to guild")
     except Exception as e:
         print(f"❌ Sync error: {e}")
     print(f"🤖 Logged in as {bot.user}")
