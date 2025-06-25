@@ -15,7 +15,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # 🔄 ตัวแปรโค้ดเริ่มต้น
 current_code = "DEFAULT123"
 
-users = json.loads(users_json)
+users = json.loads(USER)
 
 @bot.event
 async def on_ready():
