@@ -104,7 +104,7 @@ async def send_code(interaction: discord.Interaction, code: str):
     for entry in users_send:
         try:
             user = await bot.fetch_user(entry["dis_id"])
-            url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code=&email={code}"
+            url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code={code}&email={entry['mid']}"
 
             await user.send(
                 f"🎁 สวัสดี {entry['name']}!\nโค้ดของคุณคือ: `{code}`\nกดที่นี่เพื่อใช้งาน:\n{url}"
