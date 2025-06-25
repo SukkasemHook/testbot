@@ -7,7 +7,7 @@ import json
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-USER = os.getenv("USER")
+USER = os.getenv("USERS")
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
