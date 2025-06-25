@@ -7,15 +7,14 @@ import json
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-USER = os.getenv("USERS")
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # 🔄 ตัวแปรโค้ดเริ่มต้น
 current_code = "DEFAULT123"
-
-users = json.loads(USER)
+raw_users = os.getenv("USERS")
+users = json.loads(raw_users if raw_users[0] != '"' else json.loads(raw_users))
 
 @bot.event
 async def on_ready():
