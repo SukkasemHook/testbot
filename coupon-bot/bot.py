@@ -67,7 +67,7 @@ class UserDropdown(discord.ui.Select):
     def __init__(self):
         options = [
             discord.SelectOption(label=user["name"], value=user["email"])
-            for user in 
+            for user in users
         ]
         super().__init__(
             placeholder="เลือกชื่อผู้ใช้...",
