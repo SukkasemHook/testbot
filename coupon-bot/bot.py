@@ -14,8 +14,15 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 # 🔄 ตัวแปรโค้ดเริ่มต้น
 current_code = "DEFAULT123"
 raw_users = os.getenv("USERS")
-users = json.loads(raw_users if raw_users[0] != '"' else json.loads(raw_users))
-print("🔍 RAW USERS ENV =", repr(raw_users))
+
+if not raw_users:
+    raise ValueError("❌ ไม่พบตัวแปร USERS ใน environment หรือค่าว่าง")
+
+try:
+    users = json.loads(raw_users)
+except json.JSONDecodeError as e:
+    raise ValueError(f"❌ JSON decode error: {e}")
+
 @bot.event
 async def on_ready():
     try:
