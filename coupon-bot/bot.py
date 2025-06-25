@@ -15,7 +15,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 current_code = "DEFAULT123"
 raw_users = os.getenv("USERS")
 users = json.loads(raw_users if raw_users[0] != '"' else json.loads(raw_users))
-
+print("🔍 RAW USERS ENV =", repr(raw_users))
 @bot.event
 async def on_ready():
     try:
