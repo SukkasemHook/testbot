@@ -3,15 +3,19 @@ from discord import app_commands
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+USER = os.getenv("USER")
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # 🔄 ตัวแปรโค้ดเริ่มต้น
 current_code = "DEFAULT123"
+
+users = json.loads(users_json)
 
 @bot.event
 async def on_ready():
@@ -43,5 +47,35 @@ async def coupon(interaction: discord.Interaction, email: str):
 async def coupon_manual(interaction: discord.Interaction, code: str, email: str):
     url = f"https://coupon.devplay.com/coupon/cookieruntoa/en?code={code}&email={email}"
     await interaction.response.send_message(f"🔗 ลิงก์ของคุณ: {url}")
+
+class UserDropdown(discord.ui.Select):
+    def __init__(self):
+        options = [
+            discord.SelectOption(label=user["name"], value=user["email"])
+            for user in users
+        ]
+        super().__init__(
+            placeholder="เลือกชื่อผู้ใช้...",
+            min_values=1,
+            max_values=1,
+            options=options
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        email = self.values[0]
+        user = next((u for u in users if u["email"] == email), None)
+        if user:
+            url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code={current_code}&email={email}"
+            await interaction.response.send_message(f"🔗 **{user['name']}**: {url}", ephemeral=True)
+
+class DropdownView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(UserDropdown())
+
+@bot.tree.command(name="coupon_dropdown", description="เลือกรายชื่อเพื่อรับลิงก์คูปอง")
+async def coupon_dropdown(interaction: discord.Interaction):
+    await interaction.response.send_message("📋 กรุณาเลือกชื่อ:", view=DropdownView(), ephemeral=True)
+
 
 bot.run(TOKEN)
