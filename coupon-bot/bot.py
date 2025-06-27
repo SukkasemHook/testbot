@@ -92,34 +92,6 @@ async def coupon_dropdown(interaction: discord.Interaction):
     await interaction.response.send_message("📋 กรุณาเลือกชื่อ:", view=DropdownView(), ephemeral=True)
 
 
-@bot.tree.command(name="sendcode", description="ส่งโค้ดให้ทุกคนใน list")
-@app_commands.describe(code="โค้ดที่ต้องการส่ง")
-async def send_code(interaction: discord.Interaction, code: str):
-    await interaction.response.send_message(f"📨 เริ่มส่งโค้ด `{code}` ไปยังผู้ใช้ในรายการ...", ephemeral=True)
-
-    sent = 0
-    failed = 0
-
-    for entry in users_send:
-        try:
-            user = await bot.fetch_user(entry["dis_id"])
-            url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code={code}&email={entry['mid']}"
-
-            await user.send(
-                f"🎁 สวัสดี {entry['name']}!\nโค้ดของคุณคือ: `{code}`\nกดที่นี่เพื่อใช้งาน:\n{url}"
-            )
-            sent += 1
-        except discord.Forbidden:
-            failed += 1
-        except Exception as e:
-            print(f"❌ Error ส่งหา {entry['name']} ({entry['dis_id']}): {e}")
-            failed += 1
-
-    await interaction.followup.send(
-        f"✅ ส่งสำเร็จ {sent} คน | ❌ ล้มเหลว {failed} คน", ephemeral=True
-    )
-
-
 class CodeView(discord.ui.View):
     def __init__(self, code_url: str):
         super().__init__()
@@ -128,8 +100,8 @@ class CodeView(discord.ui.View):
             url=code_url
         ))
 
-async def send_code_dm(user: discord.User, code: str, player_name: str):
-    code_url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code={code}&email=mid"
+async def send_code_card_dm(user: discord.User, code: str, player_name: str, mid: str):
+    code_url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code=&email={mid}"
 
     embed = discord.Embed(
         title="🎁 5x Bonus Raid Tickets!",
@@ -142,7 +114,37 @@ async def send_code_dm(user: discord.User, code: str, player_name: str):
     try:
         await user.send(embed=embed, view=CodeView(code_url))
         print(f"✅ ส่งโค้ดให้ {player_name} แล้ว")
+        return True
     except discord.Forbidden:
         print(f"❌ ส่ง DM ให้ {player_name} ไม่ได้ (user id: {user.id})")
+        return False
+    except Exception as e:
+        print(f"❌ Error DM {player_name}: {e}")
+        return False
+
+@bot.tree.command(name="sendcode", description="ส่งโค้ด (แบบการ์ด) ให้ทุกคนใน list")
+@app_commands.describe(code="โค้ดที่ต้องการส่ง")
+async def send_code(interaction: discord.Interaction, code: str):
+    await interaction.response.send_message(f"📨 เริ่มส่ง Embed code `{code}` ไปยังผู้ใช้ในรายการ...", ephemeral=True)
+
+    sent = 0
+    failed = 0
+
+    for entry in users_send:
+        try:
+            user = await bot.fetch_user(entry["dis_id"])
+            success = await send_code_card_dm(user, code, entry["name"], entry["mid"])
+            if success:
+                sent += 1
+            else:
+                failed += 1
+        except Exception as e:
+            print(f"❌ Error ส่งหา {entry['name']} ({entry['dis_id']}): {e}")
+            failed += 1
+
+    await interaction.followup.send(
+        f"✅ ส่งสำเร็จ {sent} คน | ❌ ล้มเหลว {failed} คน", ephemeral=True
+    )
+
 
 bot.run(TOKEN)
