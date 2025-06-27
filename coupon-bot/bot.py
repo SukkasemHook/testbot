@@ -101,14 +101,14 @@ class CodeView(discord.ui.View):
         ))
 
 async def send_code_card_dm(user: discord.User, code: str, player_name: str, mid: str):
-    code_url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code=&email={mid}"
+    code_url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code={code}&email={mid}"
 
     embed = discord.Embed(
-        title="🎁 5x Bonus Raid Tickets!",
-        description='"Show me what you\'ve got!"\n\n**Click below to redeem your reward.**',
-        color=discord.Color.orange()
+        title=f"🥳 {player_name} Guess what? Your surprise gift is here! 🎁💖",
+        description='You’ve received a limited-time gift! 🎁\nBe sure to claim it soon! ⏰',
+        color=discord.Color.blue()
     )
-    embed.set_footer(text="Check your mailbox! • Daily Reset in 5 hours (Happy Weekends!)")
+    embed.set_footer(text="Check your mailbox! When you redeem, you will receive a reward.")
     embed.set_thumbnail(url="https://files.catbox.moe/3kgnjk.png") 
 
     try:
