@@ -120,5 +120,29 @@ async def send_code(interaction: discord.Interaction, code: str):
     )
 
 
+class CodeView(discord.ui.View):
+    def __init__(self, code_url: str):
+        super().__init__()
+        self.add_item(discord.ui.Button(
+            label="📩 Redeem Now",
+            url=code_url
+        ))
+
+async def send_code_dm(user: discord.User, code: str, player_name: str):
+    code_url = f"https://coupon.devplay.com/coupon/cookieruntoa/th?code={code}&email=mid"
+
+    embed = discord.Embed(
+        title="🎁 5x Bonus Raid Tickets!",
+        description='"Show me what you\'ve got!"\n\n**Click below to redeem your reward.**',
+        color=discord.Color.orange()
+    )
+    embed.set_footer(text="Check your mailbox! • Daily Reset in 5 hours (Happy Weekends!)")
+    embed.set_thumbnail(url="https://files.catbox.moe/3kgnjk.png") 
+
+    try:
+        await user.send(embed=embed, view=CodeView(code_url))
+        print(f"✅ ส่งโค้ดให้ {player_name} แล้ว")
+    except discord.Forbidden:
+        print(f"❌ ส่ง DM ให้ {player_name} ไม่ได้ (user id: {user.id})")
 
 bot.run(TOKEN)
