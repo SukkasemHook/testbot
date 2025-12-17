@@ -176,7 +176,7 @@ async def send_code_7k_dm(user: discord.User, code: str, player_name: str, mid: 
         print(f"❌ Error DM {player_name}: {e}")
         return False
 
-@bot.tree.command(name="sendcode", description="ส่งโค้ด (แบบการ์ด) ให้ทุกคนใน list")
+@bot.tree.command(name="sendcode7k", description="ส่งโค้ด (แบบการ์ด) ให้ทุกคนใน list")
 @app_commands.describe(code="โค้ดที่ต้องการส่ง")
 async def send_code(interaction: discord.Interaction, code: str):
     await interaction.response.send_message(f"📨 เริ่มส่ง Embed code `{code}` ไปยังผู้ใช้ในรายการ...", ephemeral=True)
@@ -201,3 +201,4 @@ async def send_code(interaction: discord.Interaction, code: str):
     )
 
 bot.run(TOKEN)
+
